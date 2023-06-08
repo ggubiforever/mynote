@@ -6,4 +6,6 @@ app_name = 'regexpenses'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('<int:exp_id>/', views.detail, name='detail'),
 ]
+

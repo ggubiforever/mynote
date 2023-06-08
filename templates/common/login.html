@@ -6,7 +6,6 @@
 <div style = "width : 400px; background-color :#F5F5F5; border: 0px" class = "container my-3" >
     <form method="post" action="{% url 'common:login' %}">
         {% csrf_token %}
-        {% include "form_errors.html" %}
         <br>
         <br>
         <label for="username">사용자ID</label>

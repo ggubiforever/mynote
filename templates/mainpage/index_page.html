@@ -6,7 +6,47 @@
 <br>
 <br>
 <br>
-<div class="container my-3">
-    <a href="{% url 'regexpenses:index' %}">지출기록</a>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class = "d-flex justify-content-evenly" >
+    <div class="badge bg-primary text-wrap" style="width: 25%; text-align:left;margin-right:10px">
+        <p class="fs-3" style="text-align:center"><a href = "{% url 'regexpenses:index' %}" style = "color:white; text-decoration:none">지출</a></p>
+        <br>
+        <br>
+        <p class="fs-5">목표로 하는 하루 평균 사용액을 설정하세요.</p>
+        <br>
+        <p class="fs-5">하루동안 실제 사용액과 매일매일 평균 사용액의 차이를 월단위로 표시합니다.</p>
+    </div>
+    <div class="badge bg-success text-wrap" style="width: 25%; text-align:left; margin-right:10px">
+        <p class="fs-3" style="text-align:center">메모</p>
+        <br>
+        <br>
+        <p class="fs-5">어떤 형식이든 상관 없습니다.  </p>
+        <br>
+        <p class="fs-5">자유롭게 손가락 가는데로 마음껏 키보드를 두들기면 됩니다.</p>
+    </div>
+    <div class="badge bg-secondary text-wrap" style="width: 25%; text-align:left;margin-right:10px">
+        <p class="fs-3" style="text-align:center">일정</p>
+        <br>
+        <br>
+        <p class="fs-5">달력에 일정을 입력하세요.  </p>
+        <br>
+        <p class="fs-5">구글 켈린더와도 연동됩니다.</p>
+    </div>
+    <div class="badge bg-dark text-wrap" style="width: 25%; text-align:left;margin-right:10px">
+        <p class="fs-3" style="text-align:center">할일</p>
+        <br>
+        <br>
+        <p class="fs-5">꼭 해야 하는일 </p>
+        <br>
+        <p class="fs-5">메모하고, 피드백이 필요한 날짜와 시간을 입력하세요</p>
+    </div>
+
 </div>
 {% endblock %}
