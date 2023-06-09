@@ -3,7 +3,7 @@
 <div class="container my-3">
     <div class="row my-3">
         <div class="col-6">
-            <a href="{% url 'regexpenses:index' %}" class="btn btn-primary">등록</a>
+            <a href="{% url 'regexpenses:nodata' %}" class="btn btn-primary">등록</a>
         </div>
         <div class="col-6">
             <div class="input-group">
@@ -21,7 +21,8 @@
     </div>
     <table class="table">
         <thead>
-        <tr class="table-dark">
+        <tr class="table-success">
+            <th><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
             <th>분류</th>
             <th>제목</th>
             <th>내역</th>
@@ -33,7 +34,7 @@
         {% if exp_list %}
         {% for item in exp_list %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+             <td><th><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th></td>
             <td>
                 {{ item.cat }}
             </td>

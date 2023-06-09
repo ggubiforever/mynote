@@ -1,10 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class = "my-3">
+        <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">지출내역 등록</h5></div>
+        <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">목표금액 : {{ tamt.tamt }}</h5></div>
+        <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">이번달 일평균 사용액 : </h5></div>
+    </div>
+    <form method="post" id="edtform">
+        {% csrf_token %}
+        <!-- 오류표시 Start -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            {% for field in form %}
+            {% if field.errors %}
+            <div>
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- 오류표시 End -->
+        <div style="float: left; width: 20%;">
+        <div class="mb-3">
+            <label for="cat" class="form-label">분류</label>
+            <input type="text" class="form-control" name="cat" id="cat"
+                   value="{{ form.cat.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
 
-</body>
-</html>
+            <label for="subject" class="form-label">제목</label>
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+
+            <label for="description" class="form-label">상세내역</label>
+            <input type="text" class="form-control" name="description" id="description"
+                   value="{{ form.description.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+
+            <label for="amt" class="form-label">지출금액</label>
+            <input type="text" class="form-control" name="amt" id="amt"
+                   value="{{ form.amt.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+
+            <label for="amtdate" class="form-label">지출일자</label>
+            <input type="text" class="form-control" name="amtdate" id="amtdate"
+                   value="{{ form.amtdate.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+
+        </div>
+            <button type="submit" class="btn btn-primary" >입력/수정</button>
+        </div>
+
+    </form>
+
+
+</div>
+{% endblock %}

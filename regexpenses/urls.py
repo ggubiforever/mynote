@@ -6,6 +6,7 @@ app_name = 'regexpenses'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('detail/', views.add_data, name='nodata'),
     path('<int:exp_id>/', views.detail, name='detail'),
 ]
 
