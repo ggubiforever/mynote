@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container my-3" style = "display:flex; justify-content:center;">
+    <div class="row my-3">
+        <form method="POST" >
+            {% csrf_token %}
+        <div class="input-group" style="width:350px">
+            <input type="text" aria-label="목표액" class="form-control" placeholder="목표금액설정" name = "target_money">
+            <input type="submit" class = "btn btn-primary" value = "입력">
+        </div>
+        </form>
+        {% if tamt %}
+        <div style="width:350px;"><h7 class="my-3 border-bottom pb-2">목표금액 : {{ tamt.target }}</h7></div>
+        {% else %}
+        <div style="width:350px;"><h7 class="my-3 border-bottom pb-2">목표금액 : 미지정</h7></div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

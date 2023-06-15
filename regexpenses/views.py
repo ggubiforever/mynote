@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-#from django.utils import timezone
+from django.utils import timezone
 from .models import expenses, daily_target
 from .forms import regExp
 from django.core.paginator import Paginator
 from datetime import date, timedelta
+from django.db.models import Count
 #from django.contrib import messages
 #from django.db.models import Q
 
@@ -18,7 +19,13 @@ def index(request):
         data = expenses.objects.filter(amtdate__range=[date.today() - timedelta(days=60), date.today()]).values().all()
         if kw:
             if kw_type == 'category':
-                data = expenses.objects.filter(cat = kw)
+                if kw == '기본식비(외식등)':
+                    ids = 0
+                elif kw == '유흥(놀고먹는거)':
+                    ids = 1
+                elif kw == '기타':
+                    ids = 2
+                data = expenses.objects.filter(cat = ids)
             elif kw_type == 'subject':
                 data = expenses.objects.filter(subject = kw)
             elif kw_type == 'date':
@@ -32,18 +39,19 @@ def index(request):
 
 
 def add_data(request):
-    tamt = expenses.objects.filter(id=1)
+    tamt = daily_target.objects.all()
+    mny = tamt[0].target
     if request.method == 'POST':
         form = regExp(request.POST)
         if form.is_valid():
+            tdate = request.POST.get('adate')
             datas = form.save(commit=False)
             datas.save()
-            listup = regexpenses.objects.filter(id=reg_id)
-            context = {'exp_list': listup,'cond':False,'tamt':tamt}
-            return render(request, 'regexpenses/exp_list.html', context)
+            return redirect('regexpenses:index')
     else:
+        today = timezone.now().strftime('%Y-%m-%d')
         form = regExp()
-        context = {'form': form,'cond':False,'tamt':tamt}
+        context = {'form': form,'cond':False,'tamt':mny,'adate':today}
         return render(request, 'regexpenses/detail.html', context)
 
 
@@ -63,5 +71,19 @@ def detail(request,reg_id):
         context = {'form': form,'cond':True,'tamt':tamt}
         return render(request, 'regexpenses/detail.html', context)
 
-def delete(request,reg_id):
-    pass
+def input_tamt(request):
+    tamt = daily_target.objects.all()
+    if "GET" == request.method:
+        mny = tamt[0].target
+        context = {'tamt': mny}
+        return render(request, 'regexpenses/input_amt.html',context)
+    else:
+        mny = request.POST["target_money"]
+        del_data = tamt
+        del_data.delete()
+        datas = daily_target()
+        datas.target = mny
+        datas.save()
+        context = {'tamt': mny}
+        return render(request, 'regexpenses/detail.html', context)
+

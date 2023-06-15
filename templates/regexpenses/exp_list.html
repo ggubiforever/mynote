@@ -34,10 +34,20 @@
         {% if exp_list %}
         {% for item in exp_list %}
         <tr>
-             <td><th><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th></td>
+             <td><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></td>
+            {% if item.cat == 0 %}
             <td>
-                {{ item.cat }}
+                기본식비(외식등)
             </td>
+            {% elif item.cat == 1 %}
+            <td>
+                유흥(놀고먹는거)
+            </td>
+            {% else %}
+            <td>
+                기타
+            </td>
+            {% endif %}
             <td>
                 <a href="{% url 'regexpenses:detail' item.id %}">{{ item.subject }}</a>
             </td>
@@ -53,5 +63,75 @@
         {% endif %}
         </tbody>
     </table>
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if exp_list.has_previous %}
+        <li class="page-item">
+             <a class="page-link" data-page="{{ exp_list.previous_page_number }}"
+           href="javascript:void(0)">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true"
+           href="javascript:void(0)">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지리스트 -->
+        {% for page_number in exp_list.paginator.page_range %}
+        {% if page_number >= exp_list.number|add:-5 and page_number <= exp_list.number|add:5 %}
+        {% if page_number == exp_list.number %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" data-page="{{ page_number }}"
+           href="javascript:void(0)">{{ page_number }}</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ page_number }}"
+           href="javascript:void(0)">{{ page_number }}</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if bom1_list.has_next %}
+        <li class="page-item">
+           <a class="page-link" data-page="{{ exp_list.next_page_number }}"
+           href="javascript:void(0)">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+             <a class="page-link" tabindex="-1" aria-disabled="true"
+           href="javascript:void(0)">다음</a>
+        </li>
+        {% endif %}
+    </ul>
 </div>
+<form id="searchForm" method="get" action="{% url 'regexpenses:index' %}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="type" name ="type" value = "{{ type }}">
+</form>
+
+<script type='text/javascript'>
+const stype = document.getElementById('search_type');
+const len_type = stype.options.length;
+const page_elements = document.getElementsByClassName("page-link");
+Array.from(page_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        document.getElementById('page').value = this.dataset.page;
+        document.getElementById('type').value = document.getElementById('search_type').options[document.getElementById("search_type").selectedIndex].value;
+        document.getElementById('kw').value = document.getElementById('search_kw').value;
+        document.getElementById('searchForm').submit();
+    });
+});
+const search_type = document.getElementById('search_type');
+const btn_search = document.getElementById("btn_search");
+btn_search.addEventListener('click', function() {
+    document.getElementById('type').value = document.getElementById('search_type').options[document.getElementById("search_type").selectedIndex].value;
+    document.getElementById('kw').value = document.getElementById('search_kw').value;
+    document.getElementById('page').value = 1;  // 검색버튼을 클릭할 경우 1페이지부터 조회한다.
+    document.getElementById('searchForm').submit();
+});
+
+</script>
 {% endblock %}

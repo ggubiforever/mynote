@@ -3,9 +3,10 @@
 <div class="container">
     <div class = "my-3">
         <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">지출내역 등록</h5></div>
-        <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">목표금액 : {{ tamt.tamt }}</h5></div>
+        <div style="float:left; width:33%; background-color:#74B1C2"><a href="{% url 'regexpenses:iptamt' %}"><h5 class="my-3 border-bottom pb-2">목표금액 : {{ tamt }}</h5></a></div>
         <div style="float:left; width:33%; background-color:#74B1C2"><h5 class="my-3 border-bottom pb-2">이번달 일평균 사용액 : </h5></div>
     </div>
+    <div>
     <form method="post" id="edtform">
         {% csrf_token %}
         <!-- 오류표시 Start -->
@@ -22,34 +23,52 @@
         </div>
         {% endif %}
         <!-- 오류표시 End -->
-        <div style="float: left; width: 20%;">
+        <div style="float: left; width: 30%;">
         <div class="mb-3">
-            <label for="cat" class="form-label">분류</label>
-            <input type="text" class="form-control" name="cat" id="cat"
-                   value="{{ form.cat.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+            <label for="cat_select" class="form-label" style = "width:50%">분류</label>
+            <select style="width: 80%;height:30px"  class="form_select" id = "cat_select" name = "cat_select" >
+                {% for v, k in form.fields.cat.choices %}
+                    <option value = "{{ v }}" {% if form.fields.cat.value == v %} selected {% endif %}>{{ k }}</option>
+                {% endfor %}
+            </select>
+            <input type = "hidden" id = "cat" name="cat" value = "{{ type }}">
 
-            <label for="subject" class="form-label">제목</label>
+
+            <label for="subject" class="form-label" style = "width:50%">제목</label>
             <input type="text" class="form-control" name="subject" id="subject"
                    value="{{ form.subject.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
 
             <label for="description" class="form-label">상세내역</label>
-            <input type="text" class="form-control" name="description" id="description"
-                   value="{{ form.description.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+            <input type="text" class="form-control" name="description" id="description" style = "width:80%;font-size:18px;"
+                   value="{{ form.description.value|default_if_none:'' }}">
 
             <label for="amt" class="form-label">지출금액</label>
             <input type="text" class="form-control" name="amt" id="amt"
                    value="{{ form.amt.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
 
             <label for="amtdate" class="form-label">지출일자</label>
-            <input type="text" class="form-control" name="amtdate" id="amtdate"
+            {% if adate %}
+            <input type="date" class="form-control" name="amtdate" id="amtdate"
+                   value="{{ adate }}" style="width:200px;height:25px;font-size:18px;">
+            {% else %}
+            <input type="date" class="form-control" name="amtdate" id="amtdate"
                    value="{{ form.amtdate.value|default_if_none:'' }}" style="width:200px;height:25px;font-size:18px;">
+            {% endif %}
+        </div>
+            <button type="submit" class="btn btn btn-outline-secondary" id = 'btn_go'>입력/수정</button>
+            <a href="{% url 'regexpenses:index' %}">돌아가기</a>
+        </div>
 
-        </div>
-            <button type="submit" class="btn btn-primary" >입력/수정</button>
-        </div>
 
     </form>
-
+    </div>
 
 </div>
+
+<script type='text/javascript'>
+const btn_go = document.getElementById("btn_go");
+btn_go.addEventListener('click', function() {
+    document.getElementById('cat').value = document.getElementById('cat_select').options[document.getElementById("cat_select").selectedIndex].value;
+});
+</script>
 {% endblock %}
