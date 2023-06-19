@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import expenses, daily_target
@@ -56,19 +58,23 @@ def add_data(request):
 
 
 def detail(request,reg_id):
-    tamt = expenses.objects.filter(id=1)
+    tamt = daily_target.objects.all()
+    tamt = tamt[0].target
     data = get_object_or_404(expenses, pk=reg_id)
     if request.method == 'POST':
         form = regExp(request.POST, instance=data)
         if form.is_valid():
             datas = form.save(commit=False)
             datas.save()
-            listup = regexpenses.objects.filter(id=reg_id)
+            listup = expenses.objects.filter(id=reg_id)
             context = {'exp_list': listup,'cond':True}
             return render(request, 'regexpenses/exp_list.html', context)
     else:
         form = regExp(instance=data)
-        context = {'form': form,'cond':True,'tamt':tamt}
+        lists = expenses.objects.filter(id=reg_id)
+        adate = lists[0].amtdate
+        adate = adate.strftime('%Y-%m-%d')
+        context = {'adate':adate,'form': form,'cond':True,'tamt':tamt}
         return render(request, 'regexpenses/detail.html', context)
 
 def input_tamt(request):
