@@ -4,6 +4,9 @@
     <div class="row my-3">
         <div class="col-6">
             <a href="{% url 'regexpenses:nodata' %}" class="btn btn-primary">등록</a>
+            <a href="{% url 'regexpenses:iptamt' %}" class="btn btn-primary">목표금액</a>
+            <h7>목표금액 : {{ tamt }}</h7>
+            <h7>일평균 : {{ tamt }}</h7>
         </div>
         <div class="col-6">
             <div class="input-group">

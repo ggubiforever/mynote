@@ -15,6 +15,11 @@ from django.db.models import Count
 def index(request):
     user = request.user
     if user.is_authenticated:
+        tamt = daily_target.objects.all()
+        if tamt:
+            mny = tamt[0].target
+        else:
+            mny = 0
         page = request.GET.get('page', '1')
         kw = request.GET.get('kw', '')  # 검색어
         kw_type = request.GET.get('type','')
@@ -34,7 +39,7 @@ def index(request):
                 data = expenses.objects.filter(amtdate = kw)
         paginator = Paginator(data, 15)  # 페이지당 15개씩 보여주기
         page_obj = paginator.get_page(page)
-        context = {'exp_list': page_obj, 'page':page, 'kw':kw, 'kw_type':kw_type}
+        context = {'exp_list': page_obj, 'page':page, 'kw':kw, 'kw_type':kw_type,'tamt':mny}
         return render(request, 'regexpenses/exp_list.html', context)
     else:
         return redirect('common:login')
@@ -42,7 +47,10 @@ def index(request):
 
 def add_data(request):
     tamt = daily_target.objects.all()
-    mny = tamt[0].target
+    if tamt:
+        mny = tamt[0].target
+    else:
+        mny = 0
     if request.method == 'POST':
         form = regExp(request.POST)
         if form.is_valid():
@@ -59,7 +67,10 @@ def add_data(request):
 
 def detail(request,reg_id):
     tamt = daily_target.objects.all()
-    tamt = tamt[0].target
+    if tamt:
+        tamt = tamt[0].target
+    else:
+        tamt = 0
     data = get_object_or_404(expenses, pk=reg_id)
     if request.method == 'POST':
         form = regExp(request.POST, instance=data)
@@ -80,16 +91,41 @@ def detail(request,reg_id):
 def input_tamt(request):
     tamt = daily_target.objects.all()
     if "GET" == request.method:
-        mny = tamt[0].target
+        if tamt:
+            mny = tamt[0].target
+        else:
+            mny = 0
         context = {'tamt': mny}
         return render(request, 'regexpenses/input_amt.html',context)
     else:
+        user = request.user
+        if user.is_authenticated:
+            page = request.GET.get('page', '1')
+            kw = request.GET.get('kw', '')  # 검색어
+            kw_type = request.GET.get('type', '')
+            data = expenses.objects.filter(
+                amtdate__range=[date.today() - timedelta(days=60), date.today()]).values().all()
+            if kw:
+                if kw_type == 'category':
+                    if kw == '기본식비(외식등)':
+                        ids = 0
+                    elif kw == '유흥(놀고먹는거)':
+                        ids = 1
+                    elif kw == '기타':
+                        ids = 2
+                    data = expenses.objects.filter(cat=ids)
+                elif kw_type == 'subject':
+                    data = expenses.objects.filter(subject=kw)
+                elif kw_type == 'date':
+                    data = expenses.objects.filter(amtdate=kw)
+            paginator = Paginator(data, 15)  # 페이지당 15개씩 보여주기
+            page_obj = paginator.get_page(page)
         mny = request.POST["target_money"]
         del_data = tamt
         del_data.delete()
         datas = daily_target()
         datas.target = mny
         datas.save()
-        context = {'tamt': mny}
-        return render(request, 'regexpenses/detail.html', context)
+        context = {'exp_list': page_obj, 'page': page, 'kw': kw, 'kw_type': kw_type,'tamt':mny}
+        return render(request, 'regexpenses/exp_list.html', context)
 
