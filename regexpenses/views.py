@@ -61,7 +61,7 @@ def add_data(request):
     else:
         today = timezone.now().strftime('%Y-%m-%d')
         form = regExp()
-        context = {'form': form,'cond':False,'tamt':mny,'adate':today}
+        context = {'form': form,'cond':False,'tamt':mny,'adate':today,'rid':'0'}
         return render(request, 'regexpenses/detail.html', context)
 
 
@@ -85,7 +85,7 @@ def detail(request,reg_id):
         lists = expenses.objects.filter(id=reg_id)
         adate = lists[0].amtdate
         adate = adate.strftime('%Y-%m-%d')
-        context = {'adate':adate,'form': form,'cond':True,'tamt':tamt}
+        context = {'adate':adate,'form': form,'cond':True,'tamt':tamt,'rid':reg_id}
         return render(request, 'regexpenses/detail.html', context)
 
 def input_tamt(request):
@@ -128,4 +128,13 @@ def input_tamt(request):
         datas.save()
         context = {'exp_list': page_obj, 'page': page, 'kw': kw, 'kw_type': kw_type,'tamt':mny}
         return render(request, 'regexpenses/exp_list.html', context)
+
+
+def del_itm(request,rid):
+    print(11111)
+    datas = expenses.objects.get(id=rid)
+    datas.delete()
+    listup = expenses.objects.all()
+    context = {'exp_list': listup, 'cond': True}
+    return render(request, 'regexpenses/exp_list.html', context)
 
